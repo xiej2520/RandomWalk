@@ -29,4 +29,4 @@ class ImageGenerator:
 		
 		draw.point(xy, 1)
 
-		img.save(str(file) + '.png')
+		img.save(file)

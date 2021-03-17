@@ -45,26 +45,28 @@ class Walker:
 	def repelWalk(self, limit): 
 		# Probability of going in one direction is directly proportional to how (relatively) close it is to that wall
 		while len(self.path) < limit and self.checkBound():
-			dx1 = self.pos[0] - self.walls[0]
-			dx2 = self.walls[1] - self.pos[0]
-			dy1 = self.pos[2] - self.walls[2]
-			dy2 = self.walls[3] - self.pos[2]
-			ddx = dx2 - dx1
-			ddy = dy2 - dy1
+			dx1 = self.currentPos[0] - self.walls[0]
+			dx2 = self.walls[1] - self.currentPos[0]
+			dy1 = self.currentPos[1] - self.walls[2]
+			dy2 = self.walls[3] - self.currentPos[1]
+			ddx = dx1 - dx2
+			ddy = dy1 - dy2
 			# in center: ddx/xTotal=0 -> 0.25 prob left, 0.25 prob right
 			# on left: ddx/xTotal=-1 -> 0 prob left, 0.5 prob right
 			# on right: ddx/xTotal=1 -> 0.5 prob left, 0 prob right
 			pRight = -1/4 * ddx/(self.walls[1]-self.walls[0]) + 0.25
 			pUp = -1/4 * ddy/(self.walls[3]-self.walls[2]) + 0.25
+			pRight = 0.25 + 0.5 * (pRight-0.25)
+			pUp = 0.25 + 0.5 * (pUp-0.25)
 			r = random.random()
 			if r <= pRight:
 				self.currentPos[0] += 1
-			elif r <= 0.5 - pRight:
+			elif r <= 0.5:
 				self.currentPos[0] -= 1
 			elif r <= 0.5 + pUp:
 				self.currentPos[1] += 1
-			elif r <= 1-pUp:
+			elif r <= 1:
 				self.currentPos[1] -= 1
-			self.path.appent(self.currentPos.copy())
+			self.path.append(self.currentPos.copy())
 	
 
