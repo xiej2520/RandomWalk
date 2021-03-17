@@ -1,10 +1,10 @@
 from walkers import *
 from imageGen import *
+import math
 
+w = Walker([0, 0], [-128, 128, -128, 128])
 
-w = Walker([0, 0], [-1024, 1024, -1024, 1024])
+w.randomWalk()
+imgGen = ImageGenerator(w)
 
-w.basicWalk()
-imgGen = ImageGenerator(w.walls, w.path)
-
-imgGen.generateFlat("./generated/4.png")
+imgGen.generateRandom("./generated/4.png")

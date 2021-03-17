@@ -7,6 +7,7 @@ class Walker:
 
 	def __init__(self, start, walls):
 		self.path = [start.copy()]
+		self.startPos = start.copy()
 		self.currentPos = start.copy()
 		self.walls = walls
 
@@ -16,31 +17,41 @@ class Walker:
 			return False
 		return True
 
-	def basicWalk(self): # random steps with equal probability until on wall
-		while self.checkBound():
-			r = random.randint(0, 3)
-			if r == 0:
-				self.currentPos[0] += 1
-			elif r == 1:
-				self.currentPos[0] -= 1
-			elif r == 2:
-				self.currentPos[1] += 1
-			elif r == 3:
-				self.currentPos[1] -= 1
-			self.path.append(self.currentPos.copy())
-	
-	def limitedWalk(self, limit): # random steps with equal probability until on wall or path limit
-		while len(self.path) < limit and self.checkBound():
-			r = random.randint(0, 3)
-			if r == 0:
-				self.currentPos[0] += 1
-			elif r == 1:
-				self.currentPos[0] -= 1
-			elif r == 2:
-				self.currentPos[1] += 1
-			elif r == 3:
-				self.currentPos[1] -= 1
-			self.path.append(self.currentPos.copy())
+	def setCurrentPos(self, pos):
+		self.currentPos = pos.copy()
+		self.path.append(self.currentPos.copy())
+
+	def clearPath(self):
+		self.path = [self.currentPos.copy()]
+
+	def randomWalk(self, limit=None): 
+		# random steps with equal probability until on wall or limit if specified
+		if limit==None:
+			while self.checkBound():
+				r = random.randint(0, 3)
+				if r == 0:
+					self.currentPos[0] += 1
+				elif r == 1:
+					self.currentPos[0] -= 1
+				elif r == 2:
+					self.currentPos[1] += 1
+				else:
+					self.currentPos[1] -= 1
+				self.path.append(self.currentPos.copy())
+		else:
+			c = 1
+			while c < limit and self.checkBound():
+				r = random.randint(0, 3)
+				if r == 0:
+					self.currentPos[0] += 1
+				elif r == 1:
+					self.currentPos[0] -= 1
+				elif r == 2:
+					self.currentPos[1] += 1
+				else:
+					self.currentPos[1] -= 1
+				self.path.append(self.currentPos.copy())
+				c += 1
 
 	def repelWalk(self, limit): 
 		# Probability of going in one direction is directly proportional to how (relatively) close it is to that wall
