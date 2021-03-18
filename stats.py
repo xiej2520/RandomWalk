@@ -1,5 +1,4 @@
-from walkers import *
-from imageGen import *
+from Walker import *
 import numpy as np
 import matplotlib.pyplot as plt
 

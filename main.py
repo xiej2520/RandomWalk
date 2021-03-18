@@ -1,10 +1,15 @@
-from walkers import *
-from imageGen import *
+from Walker import *
+from Imager import *
 import math
 
-w = Walker([0, 0], [-128, 128, -128, 128])
+w = Walker([0, 0], [-512, 512, -512, 512])
+
+import time
+
+start = time.time()
 
 w.randomWalk()
+
 imgGen = ImageGenerator(w)
 
-imgGen.generateRandom("./generated/4.png")
+imgGen.generateFlat("./generated/4.png")

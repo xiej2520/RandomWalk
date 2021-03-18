@@ -28,7 +28,7 @@ class ImageGenerator:
 		self.xy = []
 		for i in range(self.size[0]):
 			for j in range(self.size[1]):
-				if self.flattenedPath[i][j] == 1:
+				if grid[i][j] == 1:
 					self.xy.append((i, j))
 
 
@@ -47,10 +47,11 @@ class ImageGenerator:
 	def generateRandom(self, file):
 		img = Image.new('RGB', self.size, 0)
 		draw = ImageDraw.Draw(img)
-		for coord in self.path:
+		self.translatePath()
+		self.flattenPath()
+		for coord in self.xy:
 			r = str(random.randint(0, 255))
 			g = str(random.randint(0, 255))
 			b = str(random.randint(0, 255))
-			transformedCoord = (coord[0] - self.walls[0], -(coord[1] - self.walls[1]))
-			draw.point([transformedCoord[0], transformedCoord[1]], 'rgb(' + r + ',' + g + ',' + b + ')')
+			draw.point([coord[0], coord[1]], 'rgb(' + r + ',' + g + ',' + b + ')')
 		img.save(file)
