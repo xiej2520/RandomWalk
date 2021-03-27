@@ -1,15 +1,18 @@
 import random
+from array import array
 
 class Walker:
 	
 	# pos = [x, y]
 	# walls = [xMin, xMax, yMin, yMax]
+	# signed short is +- 2^15-1
+	# signed 'int' is actually C long, 2^31-1
 
 	def __init__(self, start, walls):
-		self.path = [start.copy()]
-		self.startPos = start.copy()
-		self.currentPos = start.copy()
-		self.walls = walls
+		self.path = array('h', start)
+		self.startPos = array('h', start)
+		self.currentPos = array('h', start)
+		self.walls = array('h', walls)
 
 	def checkBound(self): # within walls
 		if (self.currentPos[0] <= self.walls[0] or self.currentPos[0] >= self.walls[1] or
@@ -18,13 +21,14 @@ class Walker:
 		return True
 
 	def setCurrentPos(self, pos):
-		self.currentPos = pos.copy()
-		self.path.append(self.currentPos.copy())
+		self.currentPos = array('h', pos)
+		self.path.append(self.currentPos)
 
 	def clearPath(self):
-		self.path = [self.currentPos.copy()]
+		self.path = [self.currentPos]
 
-	def randomWalk(self, limit=None): 
+	def randomWalk(self, limit=None):
+		"""Implement faster random generator"""
 		# random steps with equal probability until on wall or limit if specified
 		if limit==None:
 			while self.checkBound():
@@ -37,7 +41,7 @@ class Walker:
 					self.currentPos[1] += 1
 				else:
 					self.currentPos[1] -= 1
-				self.path.append(self.currentPos.copy())
+				self.path.extend(self.currentPos)
 		else:
 			c = 1
 			while c < limit and self.checkBound():
@@ -50,7 +54,7 @@ class Walker:
 					self.currentPos[1] += 1
 				else:
 					self.currentPos[1] -= 1
-				self.path.append(self.currentPos.copy())
+				self.path.extend(self.currentPos)
 				c += 1
 
 	def repelWalk(self, limit): 
@@ -78,6 +82,6 @@ class Walker:
 				self.currentPos[1] += 1
 			elif r <= 1:
 				self.currentPos[1] -= 1
-			self.path.append(self.currentPos.copy())
+			self.path.extend(self.currentPos)
 	
 
