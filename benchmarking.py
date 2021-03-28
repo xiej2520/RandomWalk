@@ -1,51 +1,45 @@
 from Walker import *
 from Imager import *
-
-from array import array
-
 import time
+import os, psutil;
+import matplotlib.pyplot as plt
 
-arr = array('i', [0, 1])
+path_lengths = []
+speed1 = []
+mem1 = []
+speed2 = []
+mem2 = []
 
-lp = [0, 1]
-arx = array('i', [0, 1])
+for i in range(0, 100):
+    w = Walker([0, 0], [-200, 200, -200, 200])
+    start = time.time()
+    w.randomWalk()
+    path_lengths.append(len(w.path))
+    end = time.time()
+    speed1.append(float(end - start))
+    mem1.append(float(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+
+    imgGen = ImageGenerator(w)
+    start = time.time()
+    imgGen.generateFlat("./generated/4.png")
+    end = time.time()
+    speed2.append(float(end - start))
+    mem2.append(float(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
 
 
-lr = [0, 1]
+plt.plot(path_lengths, speed1, 'o')
+plt.show()
+plt.plot(path_lengths, mem1, 'o')
+plt.show()
+plt.plot(path_lengths, speed2, 'o')
+plt.show()
+plt.plot(path_lengths, mem2, 'o')
+plt.show()
 
-start = time.time()
-
-for i in range(0, 10 ** 7):
-    lp[1] <= 10 ** 6
-    lp[1] += 1
-    lr += lp.copy()
-
-
-end = time.time()
-import os, psutil; print("RAM usage (MB): " + str(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-del lr[:]
-print(end - start)
-
-lp = [0, 1]
-start = time.time()
-
-for i in range(0, 10 ** 7):
-    lp[1] <= 10 ** 6
-    lp[1] += 1
-    arr.extend(lp.copy())
-
-end = time.time()
-import os, psutil; print("RAM usage (MB): " + str(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-print(end - start)
-
-lp = [0, 1]
-del arr[:]
-start = time.time()
-for i in range(0, 10 ** 7):
-    arx[1] <= 10 ** 6
-    arx[1] += 1
-    arr.extend(arx)
-
-end = time.time()
-import os, psutil; print("RAM usage (MB): " + str(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-print(end - start)
+import os
+if os.path.exists("./generated/benchmark.txt"):
+    os.remove("./generated/benchmark.txt")
+f = open("./generated/benchmark.txt", "w")
+for i in range(0, len(path_lengths)):
+    f.write(str(path_lengths[i]) + " " + str(speed1[i]) + " " + str(mem1[i]) + " " + str(speed2[i]) + " " + str(mem2[i]))
+f.close()
