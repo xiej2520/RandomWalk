@@ -32,12 +32,12 @@ class Walker:
 		# random steps with equal probability until on wall or limit if specified
 		if limit==None:
 			while self.checkBound():
-				r = random.randint(0, 3)
-				if r == 0:
+				r = random.random()
+				if r <= 0.25:
 					self.currentPos[0] += 1
-				elif r == 1:
+				elif r <= 0.5:
 					self.currentPos[0] -= 1
-				elif r == 2:
+				elif r <= 0.75:
 					self.currentPos[1] += 1
 				else:
 					self.currentPos[1] -= 1
