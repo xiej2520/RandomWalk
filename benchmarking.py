@@ -10,8 +10,8 @@ mem1 = []
 speed2 = []
 mem2 = []
 
-for i in range(0, 1000):
-    w = Walker([0, 0], [-64, 64, -64, 64])
+for i in range(0, 10):
+    w = Walker([0, 0], [-512, 512, -512, 512])
     start = time.time()
     w.random_walk()
     path_lengths.append(len(w.path))
@@ -36,9 +36,6 @@ plt.show()
 plt.plot(path_lengths, mem2, 'o')
 plt.show()
 
-import os
-if os.path.exists("./generated/benchmark.txt"):
-    os.remove("./generated/benchmark.txt")
 f = open("./generated/benchmark.txt", "w")
 for i in range(0, len(path_lengths)):
     f.write(str(path_lengths[i]) + " " + str(speed1[i]) + " " + str(mem1[i]) + " " + str(speed2[i]) + " " + str(mem2[i]) + "\n")

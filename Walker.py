@@ -1,5 +1,6 @@
 import random
 from array import array
+import pickle
 
 class Walker:
 	
@@ -9,10 +10,15 @@ class Walker:
 	# signed 'int' is actually C long, 2^31-1
 
 	def __init__(self, start, walls):
-		self.path = array('h', start)
+		# signed short values have to be <32768
+		for i in walls:
+			if abs(i) > 32767:
+				print("Wall value > 32767!")
+				raise OverflowError
 		self.start_pos = array('h', start)
 		self.current_pos = array('h', start)
 		self.walls = array('h', walls)
+		self.path = array('h', start)
 
 	def check_bound(self): # within walls
 		if (self.current_pos[0] <= self.walls[0] or self.current_pos[0] >= self.walls[1] or
@@ -26,6 +32,17 @@ class Walker:
 
 	def clear_path(self):
 		self.path = [self.current_pos]
+
+	@classmethod
+	def load(cls, file):
+		# loads walker file previously saved
+		with open(file, 'rb') as f:
+			return pickle.load(f)
+	
+	def save(self, file):
+		with open(file, "wb") as f:
+			pickle.dump(self, f, 2)
+
 
 	def random_walk(self, limit=None):
 		"""Implement faster random generator"""
@@ -57,6 +74,80 @@ class Walker:
 				self.path.extend(self.current_pos)
 				c += 1
 
+	def diagonal_walk(self):
+		# only diagonals, creates checkerboard pattern
+		while self.check_bound():
+			r = random.random()
+			if r <= 0.25:
+				self.current_pos[0] += 1
+				self.current_pos[1] += 1
+			elif r <= 0.5:
+				self.current_pos[0] += 1
+				self.current_pos[1] -= 1
+			elif r <= 0.75:
+				self.current_pos[0] -= 1
+				self.current_pos[1] += 1
+			else:
+				self.current_pos[0] -= 1
+				self.current_pos[1] -= 1
+			self.path.extend(self.current_pos)
+
+	def octo_walk(self):
+		# Cardinal and ordinal directions
+		while self.check_bound():
+			r = random.random()
+			if r <= 0.125:
+				self.current_pos[0] += 1
+			elif r <= 0.25:
+				self.current_pos[0] += 1
+				self.current_pos[1] += 1
+			elif r <= 0.375:
+				self.current_pos[1] += 1
+			elif r <= 0.5:
+				self.current_pos[0] -= 1
+				self.current_pos[1] += 1
+			elif r <= 0.625:
+				self.current_pos[0] -= 1
+			elif r <= 0.75:
+				self.current_pos[0] -= 1
+				self.current_pos[1] -= 1
+			elif r <= 0.875:
+				self.current_pos[1] -= 1
+			else:
+				self.current_pos[0] += 1
+				self.current_pos[1] -= 1
+			self.path.extend(self.current_pos)
+
+	def knight_walk(self):
+		# knight in chess
+		while self.check_bound():
+			r = random.random()
+			if r <= 0.125:
+				self.current_pos[0] += 2
+				self.current_pos[1] += 1
+			elif r <= 0.25:
+				self.current_pos[0] += 1
+				self.current_pos[1] += 2
+			elif r <= 0.375:
+				self.current_pos[0] -= 1
+				self.current_pos[1] += 2
+			elif r <= 0.5:
+				self.current_pos[0] -= 2
+				self.current_pos[1] += 1
+			elif r <= 0.625:
+				self.current_pos[0] -= 2
+				self.current_pos[1] -= 1
+			elif r <= 0.75:
+				self.current_pos[0] -= 1
+				self.current_pos[1] -= 2
+			elif r <= 0.875:
+				self.current_pos[0] += 1
+				self.current_pos[1] -= 2
+			else:
+				self.current_pos[0] += 2
+				self.current_pos[1] -= 1
+			self.path.extend(self.current_pos)
+
 	def repel_walk(self, limit): 
 		# Probability of going in one direction is directly proportional to how (relatively) close it is to that wall
 		while len(self.path) < limit and self.check_bound():
@@ -84,4 +175,3 @@ class Walker:
 				self.current_pos[1] -= 1
 			self.path.extend(self.current_pos)
 	
-

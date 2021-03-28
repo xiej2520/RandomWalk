@@ -42,8 +42,9 @@ class Imager:
 					self.flattened_path.append(j)
 
 
-	def generate_flat(self, file):
-		img = Image.new("1", self.size, 0)
+	# 2 colors
+	def generate_flat(self, file, bg_color=(0,0,0,255), path_color=(255,255,255,255)):
+		img = Image.new("RGBA", self.size, bg_color)
 		draw = ImageDraw.Draw(img)
 
 		# Do all operations in place for speed
@@ -56,10 +57,12 @@ class Imager:
 				# translate y coord
 				block[index_x + 1] -= self.walls[1]
 				block[index_x + 1] *= -1
-			draw.point(block, 1)
+			draw.point(block, path_color)
 
 		img.save(file)
 
+	
+	# random color
 	def generate_random(self, file):
 		img = Image.new('RGB', self.size, 0)
 		draw = ImageDraw.Draw(img)
@@ -72,4 +75,30 @@ class Imager:
 			color = 'rgb(' + r + ',' + g + ',' + b + ')'
 			draw.point([self.path[i] - self.walls[0], -(self.path[i+1]-self.walls[1])], color)
 
+		img.save(file)
+	
+	
+	# reflects over y=x in WALKER AXES
+	def generate_symmetrical(self, file):
+		img = Image.new('RGB', self.size, 0)
+		draw = ImageDraw.Draw(img)
+		for i in range(0, len(self.path), 2):
+			r = str(random.randint(0, 80))
+			g = str(random.randint(200, 255))
+			b = str(random.randint(0, 80))
+			color = 'rgb(' + r + ',' + g + ',' + b + ')'
+			draw.point([self.path[i]-self.walls[0], -(self.path[i+1]-self.walls[1])], color)
+			draw.point([-(self.path[i+1]-self.walls[1]), self.path[i]-self.walls[0]], color)
+		img.save(file)
+	
+
+	# linear gradient colors from start to end
+	def generate_linear_gradient(self, file, bg_color=(0,0,0,255), start_color=(0,0,0,255), end_color=(255,255,255,255)):
+		img = Image.new('RGB', self.size, bg_color)
+		draw = ImageDraw.Draw(img)
+		diff = tuple(end_color[i] - start_color[i] for i in range(0,4))
+		path_length = len(self.path)
+		for i in range(0, path_length, 2):
+			color = tuple(int(start_color[j] + diff[j] * i/path_length) for j in range(0,4))
+			draw.point([self.path[i]-self.walls[0], -(self.path[i+1]-self.walls[1])], color)
 		img.save(file)

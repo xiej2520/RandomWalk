@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 
 lengths = []
-for i in range(0,10000):
-	x = Walker([0,0], [-16, 16, -16, 16])
-	x.basicWalk()
+for i in range(0,10**5):
+	x = Walker([0,0], [-2, 2, -2, 2])
+	x.random_walk()
 	lengths.append(len(x.path))
 
 
