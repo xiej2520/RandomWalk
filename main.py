@@ -1,17 +1,9 @@
 from Walker import *
 from Imager import *
-import math
 
-w = Walker([0, 0], [-8192, 8192, -8192, 8192])
+w = Walker([0, 0], [-128, 128, -128, 128])
 
-import time
 
-start = time.time()
-
-w.randomWalk()
-import os, psutil; print("RAM usage (MB): " + str(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-
-imgGen = ImageGenerator(w)
-
-imgGen.generateFlat("./generated/1.png")
-import os, psutil; print("RAM usage (MB): " + str(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+w.random_walk()
+imgGen = Imager(w)
+imgGen.generate_random("./generated/1.png")

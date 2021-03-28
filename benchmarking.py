@@ -13,15 +13,15 @@ mem2 = []
 for i in range(0, 1000):
     w = Walker([0, 0], [-64, 64, -64, 64])
     start = time.time()
-    w.randomWalk()
+    w.random_walk()
     path_lengths.append(len(w.path))
     end = time.time()
     speed1.append(float(end - start))
     mem1.append(float(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
 
-    imgGen = ImageGenerator(w)
+    imgGen = Imager(w)
     start = time.time()
-    imgGen.generateFlat("./generated/benchmark.png")
+    imgGen.generate_flat("./generated/benchmark.png")
     end = time.time()
     speed2.append(float(end - start))
     mem2.append(float(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
