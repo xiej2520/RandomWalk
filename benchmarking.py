@@ -1,5 +1,5 @@
-from Walker import *
-from Imager import *
+from walker import *
+from imager import *
 import time
 import os, psutil;
 import matplotlib.pyplot as plt
