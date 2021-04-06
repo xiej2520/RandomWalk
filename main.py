@@ -1,5 +1,5 @@
-from walker import *
-from imager import *
+from walker import Walker
+from imager import Imager
 
 
 w = Walker([0, 0], [-1024, 1024, -1024, 1024])
