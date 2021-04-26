@@ -93,12 +93,26 @@ class Imager:
 	
 
 	# linear gradient colors from start to end
-	def generate_linear_gradient(self, file, bg_color=(0,0,0,255), start_color=(0,0,0,255), end_color=(255,255,255,255)):
-		img = Image.new('RGB', self.size, bg_color)
-		draw = ImageDraw.Draw(img)
-		diff = tuple(end_color[i] - start_color[i] for i in range(0,4))
+	# HSV is from 0-255 inclusive for all 3 values
+	def generate_linear_gradient(self, file, mode="RGB", bg_color=(0,0,0,255), start_color=(0,0,0,255), end_color=(255,255,255,255)):
+
+		img = Image.new(mode, self.size, bg_color)
+
+		if mode=="RGB":
+			draw = ImageDraw.Draw(img, "RGBA")
+		
+		# no opacity for HSV
+		else:
+			draw = ImageDraw.Draw(img)
+
+		# difference between end color and start color, step through in loop
+		diff = tuple(end_color[i] - start_color[i] for i in range(0, len(start_color)))
 		path_length = len(self.path)
 		for i in range(0, path_length, 2):
-			color = tuple(int(start_color[j] + diff[j] * i/path_length) for j in range(0,4))
+			color = tuple(int(start_color[j] + int(diff[j] * i/path_length)) for j in range(0, len(start_color)))
 			draw.point([self.path[i]-self.walls[0], -(self.path[i+1]-self.walls[1])], color)
+
+		if img.mode != 'RGB':
+			img = img.convert('RGB')
+
 		img.save(file)
